@@ -1,4 +1,4 @@
 package com.example.online_course.service;
 
-public class UserDetailService {
+public class CustomerUserDetailService {
 }
