@@ -7,7 +7,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
-@Repository
-public interface OtpRepository extends JpaRepository<Long, OtpEntity> {
-    Optional<OtpEntity> findByUser(UserEntity user);
-}
+//@Repository
+//public interface OtpRepository extends JpaRepository<OtpEntity, Long> {
+//    Optional<OtpEntity> findByUser(UserEntity user);
+//}
