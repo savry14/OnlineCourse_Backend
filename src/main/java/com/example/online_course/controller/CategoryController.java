@@ -2,7 +2,6 @@ package com.example.online_course.controller;
 
 import com.example.online_course.dto.request.CategoryRequest;
 import com.example.online_course.dto.response.CategoryResponse;
-import com.example.online_course.entity.Category;
 import com.example.online_course.service.CategoryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;

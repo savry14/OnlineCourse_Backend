@@ -2,7 +2,6 @@ package com.example.online_course.service;
 
 import com.example.online_course.dto.request.CategoryRequest;
 import com.example.online_course.dto.response.CategoryResponse;
-import com.example.online_course.entity.Category;
 import com.example.online_course.exception.NotFoundException;
 import com.example.online_course.repository.CategoryRepository;
 

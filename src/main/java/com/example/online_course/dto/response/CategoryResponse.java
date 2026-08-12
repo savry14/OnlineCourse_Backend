@@ -1,6 +1,5 @@
 package com.example.online_course.dto.response;
 
-import com.example.online_course.entity.Category;
 import com.example.online_course.enums.Role;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
