@@ -1,4 +1,11 @@
 package com.example.online_course.repository;
 
-public interface UserRepository {
+import com.example.online_course.entity.User;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+import java.util.Optional;
+
+public interface UserRepository{
+
 }

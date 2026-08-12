@@ -17,5 +17,5 @@ public class CategoryResponse {
     private String categoryEmail;
     private String categoryImage;
     private Role role;
-    private Long userId;
+//    private Long userId;
 }

@@ -1,5 +1,6 @@
-package com.example.online_course.entity;
 
+
+package com.example.online_course.entity;
 
 import com.example.online_course.enums.Role;
 import jakarta.persistence.*;
@@ -15,8 +16,9 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table (name = "tbl_category")
+@Table(name = "tbl_category")
 public class Category {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long categoryId;
@@ -26,11 +28,11 @@ public class Category {
     private LocalDateTime createAt;
     private LocalDateTime updateAt;
     private Role role;
-    private Long userId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user", nullable = false)
-    private User user;
+
+//    @ManyToOne(fetch = FetchType.LAZY)
+//    @JoinColumn(name = "user_id", nullable = false)
+//    private User user;
 
     @PrePersist
     protected void onCreate() {
