@@ -7,6 +7,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -32,9 +33,8 @@ public class UserEntity {
     private Role role;
 
     @OneToMany(mappedBy = "createdBy")
-    private List<CategoryEntity> createdCategories;
+    private List<CategoryEntity> createdCategories = new ArrayList<>();
 
     @OneToMany(mappedBy = "updatedBy")
-    private List<CategoryEntity> updatedCategories;
-
+    private List<CategoryEntity> updatedCategories = new ArrayList<>();
 }

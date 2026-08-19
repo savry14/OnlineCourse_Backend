@@ -21,6 +21,7 @@ public class AuthController {
 
     @PostMapping("/createAcc")
     public ApiResponse<AuthResponse> register(@RequestBody RegisterRequest registerRequest){
+        System.out.println("🔥 REGISTER CONTROLLER REACHED");
        return new ApiResponse<>("Register successfully", 200, authService.register(registerRequest));
     }
 

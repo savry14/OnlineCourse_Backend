@@ -21,7 +21,8 @@ public class CustomerUserDetailService implements UserDetailsService {
 
         UserEntity userEntity = userRepository.findByEmail(email)
                 .orElseThrow(() ->
-                        new NotFoundException("User not found"));
+                        new UsernameNotFoundException("User not found")
+                );
 
         return org.springframework.security.core.userdetails.User.builder()
                 .username(userEntity.getEmail())

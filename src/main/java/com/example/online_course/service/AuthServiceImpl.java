@@ -11,15 +11,12 @@ import com.example.online_course.exception.EmailAndPasswordAreNotMatch;
 import com.example.online_course.exception.NotFoundException;
 import com.example.online_course.repository.UserRepository;
 import com.example.online_course.security.JwtService;
-import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 
-
 @Service
-@Data
 @RequiredArgsConstructor
 public class AuthServiceImpl implements AuthService{
     private final UserRepository userRepository;
