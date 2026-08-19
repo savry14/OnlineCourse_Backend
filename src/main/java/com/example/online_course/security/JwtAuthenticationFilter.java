@@ -24,10 +24,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) {
-
         String path = request.getServletPath();
-
-        return path.startsWith("/api/auth/");
+        return path.startsWith("/api/auth/") || path.startsWith("/api/password/");
     }
 
     @Override
@@ -36,47 +34,40 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             HttpServletResponse response,
             FilterChain filterChain
     ) throws ServletException, IOException {
-
         String authHeader = request.getHeader("Authorization");
-
         // No token
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             filterChain.doFilter(request, response);
             return;
         }
-
         String token = authHeader.substring(7);
-
         try {
-
             String email = jwtService.extractEmail(token);
-
             if (email != null &&
                     SecurityContextHolder.getContext().getAuthentication() == null) {
 
-                UserDetails userDetails =
-                        customerUserDetailService.loadUserByUsername(email);
-
+                UserDetails userDetails = customerUserDetailService.loadUserByUsername(email);
                 if (jwtService.isTokenValid(token, userDetails)) {
-
                     UsernamePasswordAuthenticationToken authentication =
                             new UsernamePasswordAuthenticationToken(
                                     userDetails,
                                     null,
                                     userDetails.getAuthorities()
                             );
-
                     SecurityContextHolder
                             .getContext()
                             .setAuthentication(authentication);
+                    System.out.println("================================");
+                    System.out.println("JWT EMAIL: " + email);
+                    System.out.println("USERNAME: " + userDetails.getUsername());
+                    System.out.println("AUTHORITIES: " + userDetails.getAuthorities());
+                    System.out.println("AUTHENTICATED: " + authentication.isAuthenticated());
+                    System.out.println("================================");
                 }
             }
-
         } catch (JwtException | IllegalArgumentException e) {
-
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             response.setContentType("application/json");
-
             response.getWriter().write(
                     """
                     {
@@ -85,10 +76,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                     }
                     """
             );
-
             return;
         }
-
         filterChain.doFilter(request, response);
     }
 }
