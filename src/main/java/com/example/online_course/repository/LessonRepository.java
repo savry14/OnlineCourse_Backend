@@ -1,4 +1,9 @@
 package com.example.online_course.repository;
 
-public interface LessonRepository {
+import com.example.online_course.entity.LessonEntity;
+import java.util.List;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface LessonRepository extends JpaRepository<LessonEntity, Long> {
+    List<LessonEntity> findByCourseId(Long courseId);
 }
