@@ -7,23 +7,27 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-
 import java.util.List;
 
 @Entity
+@Table(name = "tbl_users")
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "tbl_users")
 public class UserEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private String name;
-    @Column(unique = true)
+
+    @Column(unique = true, nullable = false)
     private String email;
+
     private String password;
+
     @Enumerated(EnumType.STRING)
     private Role role;
 
@@ -32,13 +36,5 @@ public class UserEntity {
 
     @OneToMany(mappedBy = "updatedBy")
     private List<CategoryEntity> updatedCategories;
-//    @OneToMany(mappedBy = "user")
-//    private List<CourseEntity> courses;
-//    @OneToMany(mappedBy = "user")
-//    private List<LessonEntity> lessons;
-//
-//    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
-//    private OtpEntity otp;
-
 
 }
