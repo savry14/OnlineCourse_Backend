@@ -1,17 +1,21 @@
 package com.example.online_course.service;
 
+import com.example.online_course.dto.request.LoginRequest;
 import com.example.online_course.dto.request.RegisterRequest;
 import com.example.online_course.dto.response.AuthResponse;
+import com.example.online_course.dto.response.LoginResponse;
 import com.example.online_course.entity.UserEntity;
 import com.example.online_course.enums.Role;
 import com.example.online_course.exception.EmailAlreadyExists;
+import com.example.online_course.exception.EmailAndPasswordAreNotMatch;
+import com.example.online_course.exception.NotFoundException;
 import com.example.online_course.repository.UserRepository;
+import com.example.online_course.security.JwtService;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 
 
 @Service
@@ -20,6 +24,7 @@ import java.time.LocalDateTime;
 public class AuthServiceImpl implements AuthService{
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final JwtService jwtService;
 
     @Override
     public AuthResponse register(RegisterRequest registerRequest){
@@ -31,20 +36,34 @@ public class AuthServiceImpl implements AuthService{
                 .name(registerRequest.getName())
                 .email(registerRequest.getEmail())
                 .password(encodePassword)
-                .createdAt(LocalDateTime.now())
                 .role(Role.STUDENT)
-                .isActive(false)
                 .build();
         userEntity=userRepository.save(userEntity);
         return AuthResponse.builder()
                 .id(userEntity.getId())
                 .name(userEntity.getName())
                 .email(userEntity.getEmail())
-                .createdAt(userEntity.getCreatedAt())
                 .role(userEntity.getRole())
                 .build();
-
-
-
+    }
+    @Override
+    public LoginResponse login(LoginRequest loginRequest){
+        UserEntity userEntity = userRepository.findByEmail(loginRequest.getEmail())
+                .orElseThrow(()-> new NotFoundException("Email not found"));
+        if (!passwordEncoder.matches(loginRequest.getPassword(),userEntity.getPassword())){
+            throw new EmailAndPasswordAreNotMatch("Email and Password are not match.");
+        }
+        String token = jwtService.generateToken(userEntity);
+        return LoginResponse.builder()
+                .token(token)
+                .authResponse(
+                        AuthResponse.builder()
+                                .id(userEntity.getId())
+                                .name(userEntity.getName())
+                                .email(userEntity.getEmail())
+                                .role(userEntity.getRole())
+                                .build()
+                )
+                .build();
     }
 }

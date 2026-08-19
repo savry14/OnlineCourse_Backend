@@ -1,4 +1,14 @@
 package com.example.online_course.config;
 
-public class ImageConfig {
+import org.springframework.context.annotation.Configuration;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+
+@Configuration
+public class ImageConfig implements WebMvcConfigurer {
+    @Override
+    public void addResourceHandlers(ResourceHandlerRegistry resourceHandlerRegistry){
+        resourceHandlerRegistry.addResourceHandler("/uploads/**")
+                .addResourceLocations("file:uploads/");
+    }
 }

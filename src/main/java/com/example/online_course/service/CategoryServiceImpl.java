@@ -2,10 +2,15 @@ package com.example.online_course.service;
 
 import com.example.online_course.dto.request.CategoryRequest;
 import com.example.online_course.dto.response.CategoryResponse;
+import com.example.online_course.entity.CategoryEntity;
+import com.example.online_course.entity.UserEntity;
 import com.example.online_course.exception.NotFoundException;
 import com.example.online_course.repository.CategoryRepository;
 
+import com.example.online_course.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -22,87 +27,107 @@ import java.util.UUID;
 public class CategoryServiceImpl implements CategoryService{
 
     private final CategoryRepository categoryRepository;
-//    private final UserRepository userRepository;
+    private final UserRepository userRepository;
     @Override
-    public CategoryResponse createCategory(
-            CategoryRequest categoryRequest,
-            MultipartFile file
-    ) throws IOException {
-
-//        Authentication authentication =
-//                SecurityContextHolder.getContext().getAuthentication();
-//
-//        String email = authentication.name();
-
-//      User user = userRepository.findByEmail(email)
-//                .orElseThrow(() ->
-//                        new NotFoundException("User not found!"));
-
-        if (file == null || file.isEmpty()) {
-            throw new IllegalArgumentException("Image file is required!");
+    public CategoryResponse createCategory(CategoryRequest categoryRequest){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || !authentication.isAuthenticated()) {
+            throw new NotFoundException("User is not authenticated!");
         }
-        String filename = file.getOriginalFilename();
-
-        if (filename == null || filename.isBlank()) {
-            throw new IllegalArgumentException("Invalid file name!");
-        }
-        String fileUrl =
-                UUID.randomUUID() + "_" +
-                        Paths.get(filename).getFileName();
-        Path path = Paths.get("koca");
-        if (!Files.exists(path)) {
-            Files.createDirectories(path);
-        }
-        Files.copy(
-                file.getInputStream(),
-                path.resolve(fileUrl)
-        );
-        String imageUrl =
-                "http://localhost:8080/Moko/" + fileUrl;
-
-        Category category = Category.builder()
+        String email = authentication.getName();
+        UserEntity admin = userRepository.findByEmail(email)
+                .orElseThrow(() -> new NotFoundException("User not found!"));
+        CategoryEntity category = CategoryEntity.builder()
                 .categoryName(categoryRequest.getCategoryName())
-                .categoryEmail(categoryRequest.getCategoryEmail())
-                .categoryImage(imageUrl)
-//                .user(user)
+                .createdBy(admin)
+                .updatedBy(admin)
                 .build();
         categoryRepository.save(category);
         return CategoryResponse.builder()
                 .categoryId(category.getCategoryId())
-                .categoryImage(category.getCategoryImage())
                 .categoryName(category.getCategoryName())
-//                .userId(category.getCategoryId())
+                .createdBy(category.getCreatedBy().getId())
+                .updatedBy(category.getUpdatedBy().getId())
+                .createdAt(category.getCreatedAt())
+                .updatedAt(category.getUpdatedAt())
                 .build();
     }
-    public List<CategoryResponse> getCategoryById() {
-        List<Category> categories = categoryRepository.findAll();
-        List<CategoryResponse> categoryResponses = new ArrayList<>();
-        for (Category category : categories) {
-            CategoryResponse categoryResponse =
-                    CategoryResponse.builder()
-                            .categoryId(category.getCategoryId())
-                            .categoryEmail(category.getCategoryEmail())
-                            .categoryName(category.getCategoryName())
-                            .categoryImage(category.getCategoryImage())
-                            .categoryId(category.getCategoryId())
-                            .build();
-            categoryResponses.add(categoryResponse);
-        }
-        return categoryResponses;
+
+    @Override
+    public List<CategoryResponse> getAllCategory() {
+        List<CategoryEntity> categories = categoryRepository.findAll();
+        return categories.stream()
+                .map(category -> CategoryResponse.builder()
+                        .categoryId(category.getCategoryId())
+                        .categoryName(category.getCategoryName())
+                        .createdBy(
+                                category.getCreatedBy() != null ? category.getCreatedBy().getId() : null
+                        )
+                        .updatedBy(
+                                category.getUpdatedBy() != null ? category.getUpdatedBy().getId() : null
+                        )
+                        .createdAt(category.getCreatedAt())
+                        .updatedAt(category.getUpdatedAt())
+                        .build()
+                )
+                .toList();
     }
+
     @Override
     public CategoryResponse getCategoryById(Long id) {
-        Category category = categoryRepository.findById(id)
+
+        CategoryEntity category = categoryRepository.findById(id)
                 .orElseThrow(() ->
-                        new NotFoundException(
-                                "Category not found with id: " + id
-                        ));
+                        new NotFoundException("Category not found!")
+                );
+
         return CategoryResponse.builder()
                 .categoryId(category.getCategoryId())
-                .categoryEmail(category.getCategoryEmail())
                 .categoryName(category.getCategoryName())
-                .categoryImage(category.getCategoryImage())
-//                .userId(category.getCategoryId())
+                .createdBy(
+                        category.getCreatedBy() != null ? category.getCreatedBy().getId() : null
+                )
+                .updatedBy(
+                        category.getUpdatedBy() != null ? category.getUpdatedBy().getId() : null
+                )
+                .createdAt(category.getCreatedAt())
+                .updatedAt(category.getUpdatedAt())
                 .build();
+    }
+
+
+    @Override
+    public CategoryResponse updateCategory(Long id, CategoryRequest categoryRequest) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || !authentication.isAuthenticated()) {
+            throw new NotFoundException("User is not authenticated!");
+        }
+        String email = authentication.getName();
+        UserEntity admin = userRepository.findByEmail(email)
+                .orElseThrow(() -> new NotFoundException("Admin not found!"));
+        CategoryEntity category = categoryRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Category not found!"));
+        category.setCategoryName(categoryRequest.getCategoryName());
+        category.setUpdatedBy(admin);
+        categoryRepository.save(category);
+        return CategoryResponse.builder()
+                .categoryId(category.getCategoryId())
+                .categoryName(category.getCategoryName())
+                .createdBy(category.getCreatedBy().getId())
+                .updatedBy(category.getUpdatedBy().getId())
+                .createdAt(category.getCreatedAt())
+                .updatedAt(category.getUpdatedAt())
+                .build();
+    }
+
+    @Override
+    public void deleteCategory(Long id) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || !authentication.isAuthenticated()) {
+            throw new NotFoundException("User is not authenticated!");
+        }
+        CategoryEntity category = categoryRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Category not found!"));
+        categoryRepository.delete(category);
     }
 }

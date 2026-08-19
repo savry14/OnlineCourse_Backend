@@ -1,10 +1,11 @@
 package com.example.online_course.dto.response;
 
-import com.example.online_course.enums.Role;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.time.LocalDateTime;
 
 @Data
 @Builder
@@ -13,8 +14,9 @@ import lombok.NoArgsConstructor;
 public class CategoryResponse {
     private Long categoryId;
     private String categoryName;
-    private String categoryEmail;
     private String categoryImage;
-    private Role role;
-//    private Long userId;
+    private Long createdBy;
+    private Long updatedBy;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 }

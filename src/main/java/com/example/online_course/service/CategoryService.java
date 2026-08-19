@@ -9,10 +9,9 @@ import java.util.List;
 
 public interface CategoryService {
 
-    CategoryResponse createCategory(
-            CategoryRequest categoryRequest,
-            MultipartFile file
-    ) throws IOException;
-
+    public CategoryResponse createCategory(CategoryRequest categoryRequest);
+    public List<CategoryResponse> getAllCategory();
     CategoryResponse getCategoryById(Long id);
+    public CategoryResponse updateCategory(Long id, CategoryRequest categoryRequest);
+    void deleteCategory(Long id);
 }

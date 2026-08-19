@@ -20,26 +20,25 @@ public class CategoryEntity {
         @GeneratedValue(strategy = GenerationType.IDENTITY)
         private Long categoryId;
         private String categoryName;
-        private String categoryEmail;
-        private String categoryImage;
-        private LocalDateTime createAt;
-        private LocalDateTime updateAt;
-        private Role role;
+        private LocalDateTime createdAt;
+        private LocalDateTime updatedAt;
+        @ManyToOne(fetch = FetchType.LAZY)
+        @JoinColumn(name = "created_by", nullable = false)
+        private UserEntity createdBy;
 
-
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "user_id", nullable = false)
-//    private User user;
+        @ManyToOne(fetch = FetchType.LAZY)
+        @JoinColumn(name = "updated_by")
+        private UserEntity updatedBy;
 
         @PrePersist
         protected void onCreate() {
-            createAt = LocalDateTime.now();
-            updateAt = LocalDateTime.now();
+            createdAt = LocalDateTime.now();
+            updatedAt = LocalDateTime.now();
         }
 
         @PreUpdate
         protected void onUpdate() {
-            updateAt = LocalDateTime.now();
+            updatedAt = LocalDateTime.now();
         }
 
 

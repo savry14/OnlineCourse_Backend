@@ -7,7 +7,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
+
+import java.util.List;
 
 @Entity
 @Data
@@ -23,13 +24,14 @@ public class UserEntity {
     @Column(unique = true)
     private String email;
     private String password;
-    private LocalDateTime createdAt;
     @Enumerated(EnumType.STRING)
     private Role role;
-    private boolean isActive = false;
 
-//    @OneToMany(mappedBy = "user")
-//    private List<CategoryEntity> categories;
+    @OneToMany(mappedBy = "createdBy")
+    private List<CategoryEntity> createdCategories;
+
+    @OneToMany(mappedBy = "updatedBy")
+    private List<CategoryEntity> updatedCategories;
 //    @OneToMany(mappedBy = "user")
 //    private List<CourseEntity> courses;
 //    @OneToMany(mappedBy = "user")
