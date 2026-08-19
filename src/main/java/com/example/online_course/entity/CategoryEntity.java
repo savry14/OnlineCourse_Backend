@@ -1,6 +1,5 @@
 package com.example.online_course.entity;
 
-import com.example.online_course.enums.Role;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -16,30 +15,22 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Table(name = "tbl_category")
 public class CategoryEntity {
-        @Id
-        @GeneratedValue(strategy = GenerationType.IDENTITY)
-        private Long categoryId;
-        private String categoryName;
-        private LocalDateTime createdAt;
-        private LocalDateTime updatedAt;
-        @ManyToOne(fetch = FetchType.LAZY)
-        @JoinColumn(name = "created_by", nullable = false)
-        private UserEntity createdBy;
 
-        @ManyToOne(fetch = FetchType.LAZY)
-        @JoinColumn(name = "updated_by")
-        private UserEntity updatedBy;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long categoryId;
 
-        @PrePersist
-        protected void onCreate() {
-            createdAt = LocalDateTime.now();
-            updatedAt = LocalDateTime.now();
-        }
+    private String categoryName;
 
-        @PreUpdate
-        protected void onUpdate() {
-            updatedAt = LocalDateTime.now();
-        }
+    private LocalDateTime createdAt;
 
+    private LocalDateTime updatedAt;
 
-    }
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "created_by", nullable = false)
+    private UserEntity createdBy;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "updated_by")
+    private UserEntity updatedBy;
+}

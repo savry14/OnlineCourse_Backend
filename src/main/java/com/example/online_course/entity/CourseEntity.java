@@ -6,15 +6,16 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "lesson")
+@Table(name = "course")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class LessonEntity {
+public class CourseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,15 +24,18 @@ public class LessonEntity {
     @Column(nullable = false)
     private String title;
 
-    @Column(name = "video_url")
-    private String videoUrl;
-
     @Column(columnDefinition = "TEXT")
-    private String content;
+    private String description;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "course_id", nullable = false)
-    private CourseEntity course;
+    private String thumbnail;
+
+    private BigDecimal price;
+
+    @Column(name = "category_id")
+    private Long categoryId;
+
+    @Column(name = "user_id")
+    private Long userId;
 
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
@@ -39,6 +43,8 @@ public class LessonEntity {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
+    @ManyToOne
+    private CategoryEntity categoryEntity;
     @PrePersist
     protected void onCreate() {
         this.createdAt = LocalDateTime.now();

@@ -16,11 +16,12 @@ public class OtpEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long otpId;
+
     private String otpCode;
+
     private LocalDateTime expiredTime;
-    
+
     @OneToOne
     @JoinColumn(name = "user_id")
     private UserEntity user;
-
 }
