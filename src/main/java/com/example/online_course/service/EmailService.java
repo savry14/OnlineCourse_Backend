@@ -1,4 +1,7 @@
 package com.example.online_course.service;
 
-public class EmailService {
+
+public interface EmailService {
+
+    void sendOtp(String to, String otp);
 }

@@ -32,6 +32,7 @@ public class UserEntity {
     @Enumerated(EnumType.STRING)
     private Role role;
 
+
     @OneToMany(mappedBy = "createdBy")
     private List<CategoryEntity> createdCategories = new ArrayList<>();
 

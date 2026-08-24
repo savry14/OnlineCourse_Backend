@@ -76,6 +76,7 @@ public class CourseServiceImpl implements CourseService {
                 .orElseThrow(() -> new ResourceNotFoundException("Course not found with id: " + id));
     }
 
+
     private CourseResponse toResponse(CourseEntity course) {
         return CourseResponse.builder()
                 .id(course.getId())
