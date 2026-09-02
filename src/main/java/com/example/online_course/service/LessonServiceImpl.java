@@ -56,7 +56,7 @@ public class LessonServiceImpl implements LessonService{
     @Override
     @Transactional(readOnly = true)
     public List<LessonResponse> getByCourseId(Long courseId) {
-        return lessonRepository.findByCourseId(courseId)
+        return lessonRepository.findByCourse_Id(courseId)
                 .stream()
                 .map(this::toResponse)
                 .toList();

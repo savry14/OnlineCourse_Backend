@@ -22,7 +22,7 @@
 	<description>Online Course Management System</description>
 
 	<properties>
-		<java.version>25</java.version>
+		<java.version>22</java.version>
 	</properties>
 
 	<dependencies>
