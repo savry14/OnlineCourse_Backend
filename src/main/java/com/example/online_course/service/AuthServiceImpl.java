@@ -29,11 +29,12 @@ public class AuthServiceImpl implements AuthService{
             throw new EmailAlreadyExists("Email already exists");
         }
         String encodePassword = passwordEncoder.encode(registerRequest.getPassword());
+        Role role = registerRequest.getRole() != null ? registerRequest.getRole() : Role.STUDENT;
         UserEntity userEntity = UserEntity.builder()
                 .name(registerRequest.getName())
                 .email(registerRequest.getEmail())
                 .password(encodePassword)
-                .role(Role.STUDENT)
+                .role(role)
                 .build();
         userEntity=userRepository.save(userEntity);
         return AuthResponse.builder()

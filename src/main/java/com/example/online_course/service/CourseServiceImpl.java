@@ -21,11 +21,16 @@ public class CourseServiceImpl implements CourseService {
     public CourseResponse create(CourseRequest request) {
         CourseEntity course = CourseEntity.builder()
                 .title(request.getTitle())
+                .slug(request.getSlug())
+                .category(request.getCategory())
+                .badgeLabel(request.getBadgeLabel())
                 .description(request.getDescription())
-                .thumbnail(request.getThumbnail())
+                .coverImageUrl(request.getCoverImageUrl())
                 .price(request.getPrice())
-                .categoryId(request.getCategoryId())
-                .userId(request.getUserId())
+                .accessType(request.getAccessType())
+                .format(request.getFormat())
+                .pacing(request.getPacing())
+                .isPublished(request.getIsPublished())
                 .build();
 
         CourseEntity saved = courseRepository.save(course);
@@ -53,11 +58,16 @@ public class CourseServiceImpl implements CourseService {
         CourseEntity course = findCourseOrThrow(id);
 
         course.setTitle(request.getTitle());
+        course.setSlug(request.getSlug());
+        course.setCategory(request.getCategory());
+        course.setBadgeLabel(request.getBadgeLabel());
         course.setDescription(request.getDescription());
-        course.setThumbnail(request.getThumbnail());
+        course.setCoverImageUrl(request.getCoverImageUrl());
         course.setPrice(request.getPrice());
-        course.setCategoryId(request.getCategoryId());
-        course.setUserId(request.getUserId());
+        course.setAccessType(request.getAccessType());
+        course.setFormat(request.getFormat());
+        course.setPacing(request.getPacing());
+        course.setIsPublished(request.getIsPublished());
 
         CourseEntity updated = courseRepository.save(course);
         return toResponse(updated);
@@ -80,11 +90,16 @@ public class CourseServiceImpl implements CourseService {
         return CourseResponse.builder()
                 .id(course.getId())
                 .title(course.getTitle())
+                .slug(course.getSlug())
+                .category(course.getCategory())
+                .badgeLabel(course.getBadgeLabel())
                 .description(course.getDescription())
-                .thumbnail(course.getThumbnail())
+                .coverImageUrl(course.getCoverImageUrl())
                 .price(course.getPrice())
-                .categoryId(course.getCategoryId())
-                .userId(course.getUserId())
+                .accessType(course.getAccessType())
+                .format(course.getFormat())
+                .pacing(course.getPacing())
+                .isPublished(course.getIsPublished())
                 .createdAt(course.getCreatedAt())
                 .updatedAt(course.getUpdatedAt())
                 .build();

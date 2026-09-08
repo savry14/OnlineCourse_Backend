@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name="tbl_reset_pw")
+@Table(name="tbl_password_reset")
 
 public class PasswordResetEntity {
 
