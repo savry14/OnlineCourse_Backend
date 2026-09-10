@@ -12,33 +12,44 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/section-ocr")
+@RequestMapping("/api/sections/{sectionId}/ocr-text")
 @RequiredArgsConstructor
 public class SectionOcrTextController {
     private final SectionOcrTextService sectionOcrTextService;
 
-    @PostMapping("/create")
-    public ResponseEntity<SectionOcrTextResponse> create(@Valid @RequestBody SectionOcrTextRequest request) {
+    @PostMapping
+    public ResponseEntity<SectionOcrTextResponse> create(
+            @PathVariable Long sectionId,
+            @Valid @RequestBody SectionOcrTextRequest request) {
+        request.setSectionId(sectionId);
         return ResponseEntity.status(HttpStatus.CREATED).body(sectionOcrTextService.create(request));
     }
 
-    @GetMapping("/getAll")
-    public ResponseEntity<List<SectionOcrTextResponse>> getAll() {
+    @GetMapping
+    public ResponseEntity<List<SectionOcrTextResponse>> getAll(@PathVariable Long sectionId) {
         return ResponseEntity.ok(sectionOcrTextService.getAll());
     }
 
-    @GetMapping("/getById/{id}")
-    public ResponseEntity<SectionOcrTextResponse> getById(@PathVariable Long id) {
+    @GetMapping("/{id}")
+    public ResponseEntity<SectionOcrTextResponse> getById(
+            @PathVariable Long sectionId,
+            @PathVariable Long id) {
         return ResponseEntity.ok(sectionOcrTextService.getById(id));
     }
 
-    @PutMapping("/update/{id}")
-    public ResponseEntity<SectionOcrTextResponse> update(@PathVariable Long id, @Valid @RequestBody SectionOcrTextRequest request) {
+    @PutMapping("/{id}")
+    public ResponseEntity<SectionOcrTextResponse> update(
+            @PathVariable Long sectionId,
+            @PathVariable Long id,
+            @Valid @RequestBody SectionOcrTextRequest request) {
+        request.setSectionId(sectionId);
         return ResponseEntity.ok(sectionOcrTextService.update(id, request));
     }
 
-    @DeleteMapping("/delete/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(
+            @PathVariable Long sectionId,
+            @PathVariable Long id) {
         sectionOcrTextService.delete(id);
         return ResponseEntity.noContent().build();
     }

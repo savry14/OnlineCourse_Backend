@@ -41,6 +41,14 @@ public class WishlistServiceImpl implements WishlistService {
     }
 
     @Override
+    @Transactional(readOnly = true)
+    public List<WishlistResponse> getByUsername(String email) {
+        UserEntity user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with email: " + email));
+        return wishlistRepository.findByUser_Id(user.getId()).stream().map(this::toResponse).toList();
+    }
+
+    @Override
     public void delete(Long id) {
         wishlistRepository.deleteById(id);
     }

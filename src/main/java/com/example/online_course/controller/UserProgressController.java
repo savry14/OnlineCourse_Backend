@@ -5,30 +5,35 @@ import com.example.online_course.dto.response.UserProgressResponse;
 import com.example.online_course.service.UserProgressService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/progress")
+@RequestMapping("/api/users/{userId}/progress")
 @RequiredArgsConstructor
 public class UserProgressController {
     private final UserProgressService userProgressService;
 
-    @PostMapping("/upsert")
-    public ResponseEntity<UserProgressResponse> upsert(@Valid @RequestBody UserProgressRequest request) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(userProgressService.upsert(request));
+    // PUT = upsert (idempotent) — was POST /progress/upsert
+    @PutMapping
+    public ResponseEntity<UserProgressResponse> upsert(
+            @PathVariable Long userId,
+            @Valid @RequestBody UserProgressRequest request) {
+        request.setUserId(userId);
+        return ResponseEntity.ok(userProgressService.upsert(request));
     }
 
-    @GetMapping("/by-user/{userId}")
+    @GetMapping
     public ResponseEntity<List<UserProgressResponse>> getByUser(@PathVariable Long userId) {
         return ResponseEntity.ok(userProgressService.getByUserId(userId));
     }
 
-    @DeleteMapping("/delete/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(
+            @PathVariable Long userId,
+            @PathVariable Long id) {
         userProgressService.delete(id);
         return ResponseEntity.noContent().build();
     }

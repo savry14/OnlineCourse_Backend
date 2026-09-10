@@ -5,7 +5,7 @@ import lombok.Data;
 
 @Data
 public class UserProgressRequest {
-    @NotNull(message = "userId is required")
+    // Populated from URL path variable — not sent in request body
     private Long userId;
     @NotNull(message = "sectionId is required")
     private Long sectionId;

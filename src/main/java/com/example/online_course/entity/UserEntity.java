@@ -39,6 +39,10 @@ public class UserEntity {
     @Builder.Default
     private Boolean isVerified = Boolean.FALSE;
 
+    @Column(name = "is_suspended", nullable = false)
+    @Builder.Default
+    private Boolean isSuspended = Boolean.FALSE;
+
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
 

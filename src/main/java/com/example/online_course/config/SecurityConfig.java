@@ -28,31 +28,63 @@ public class SecurityConfig {
                         )
                 )
                 .authorizeHttpRequests(auth -> auth
+                        // ── Public: Swagger / OpenAPI ──────────────────────────
                         .requestMatchers(
                                 "/v3/api-docs/**",
                                 "/swagger-ui.html",
                                 "/swagger-ui/**",
                                 "/webjars/**"
                         ).permitAll()
+
+                        // ── Public: Auth endpoints ─────────────────────────────
                         .requestMatchers("/api/auth/**").permitAll()
-                        .requestMatchers("/api/password/**").permitAll()
-                        .requestMatchers("/api/section-ocr/getAll").permitAll()
-                        .requestMatchers("/api/section-ocr/getById/**").permitAll()
-                        .requestMatchers("/api/category/create").authenticated()
-                        .requestMatchers("/api/category/getAll").permitAll()
-                        .requestMatchers("/api/category/getById/**").permitAll()
-                        .requestMatchers("/api/category/update/**").hasRole("ADMIN")
-                        .requestMatchers("/api/category/delete/**").hasRole("ADMIN")
-                        .requestMatchers("/api/course/create").authenticated()
-                        .requestMatchers("/api/course/getAll").permitAll()
-                        .requestMatchers("/api/course/getById/**").permitAll()
-                        .requestMatchers("/api/course/update/**").authenticated()
-                        .requestMatchers("/api/course/delete/**").authenticated()
-                        .requestMatchers("/api/users/get-profile").authenticated()
-                        .requestMatchers("/api/users/update-profile").authenticated()
-                        .requestMatchers("/api/users/me/change-password").authenticated()
+
+                        // ── Public: read-only Categories & Courses ─────────────
+                        .requestMatchers(
+                                org.springframework.http.HttpMethod.GET, "/api/categories/**"
+                        ).permitAll()
+                        .requestMatchers(
+                                org.springframework.http.HttpMethod.GET, "/api/courses/**"
+                        ).permitAll()
+
+                        // ── Public: read-only Sections ────────────────────────
+                        .requestMatchers(
+                                org.springframework.http.HttpMethod.GET, "/api/sections/**"
+                        ).permitAll()
+
+                        // ── Admin only: Category / Course write operations ─────
+                        .requestMatchers(
+                                org.springframework.http.HttpMethod.POST,   "/api/categories/**"
+                        ).hasRole("ADMIN")
+                        .requestMatchers(
+                                org.springframework.http.HttpMethod.PUT,    "/api/categories/**"
+                        ).hasRole("ADMIN")
+                        .requestMatchers(
+                                org.springframework.http.HttpMethod.DELETE, "/api/categories/**"
+                        ).hasRole("ADMIN")
+                        .requestMatchers(
+                                org.springframework.http.HttpMethod.POST,   "/api/courses/**"
+                        ).hasRole("ADMIN")
+                        .requestMatchers(
+                                org.springframework.http.HttpMethod.PUT,    "/api/courses/**"
+                        ).hasRole("ADMIN")
+                        .requestMatchers(
+                                org.springframework.http.HttpMethod.DELETE, "/api/courses/**"
+                        ).hasRole("ADMIN")
+
+                        // ── Admin only: User management ────────────────────────
                         .requestMatchers("/api/users").hasRole("ADMIN")
-                        .requestMatchers("/api/users/**").hasRole("ADMIN")
+                        .requestMatchers(org.springframework.http.HttpMethod.GET,    "/api/users/{id}").hasRole("ADMIN")
+                        .requestMatchers(org.springframework.http.HttpMethod.DELETE, "/api/users/{id}").hasRole("ADMIN")
+                        .requestMatchers(org.springframework.http.HttpMethod.PATCH,  "/api/users/{id}/role").hasRole("ADMIN")
+                        .requestMatchers(org.springframework.http.HttpMethod.PATCH,  "/api/users/{id}/suspend").hasRole("ADMIN")
+                        .requestMatchers(org.springframework.http.HttpMethod.PATCH,  "/api/users/{id}/unsuspend").hasRole("ADMIN")
+
+                        // ── Authenticated: own profile & wishlist ──────────────
+                        .requestMatchers("/api/users/me/**").authenticated()
+                        .requestMatchers("/api/users/{userId}/progress/**").authenticated()
+
+                        // ── Everything else requires authentication ────────────
                         .anyRequest().authenticated()
                 )
                 .exceptionHandling(ex -> ex

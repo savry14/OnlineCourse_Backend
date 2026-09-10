@@ -28,6 +28,7 @@ public class CustomerUserDetailService implements UserDetailsService {
                 .username(userEntity.getEmail())
                 .password(userEntity.getPassword())
                 .roles(userEntity.getRole().name())
+                .accountLocked(Boolean.TRUE.equals(userEntity.getIsSuspended()))
                 .build();
     }
 }

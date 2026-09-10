@@ -4,6 +4,7 @@ import com.example.online_course.dto.request.ChangePasswordRequest;
 import com.example.online_course.dto.request.UserRequest;
 import com.example.online_course.dto.response.UserResponse;
 import com.example.online_course.entity.UserEntity;
+import com.example.online_course.enums.Role;
 import com.example.online_course.exception.NotFoundException;
 import com.example.online_course.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -83,7 +84,36 @@ public class UserServiceImpl implements UserService {
         userRepository.deleteById(id);
     }
 
-    // helpers
+    // ── Admin operations ──────────────────────────────────────────────────────
+
+    @Override
+    public UserResponse changeRole(Long id, Role role) {
+        UserEntity user = findById(id);
+        user.setRole(role);
+        return toResponse(userRepository.save(user));
+    }
+
+    @Override
+    public UserResponse suspendUser(Long id) {
+        UserEntity user = findById(id);
+        if (Boolean.TRUE.equals(user.getIsSuspended())) {
+            throw new IllegalStateException("User is already suspended");
+        }
+        user.setIsSuspended(true);
+        return toResponse(userRepository.save(user));
+    }
+
+    @Override
+    public UserResponse unsuspendUser(Long id) {
+        UserEntity user = findById(id);
+        if (Boolean.FALSE.equals(user.getIsSuspended())) {
+            throw new IllegalStateException("User is not suspended");
+        }
+        user.setIsSuspended(false);
+        return toResponse(userRepository.save(user));
+    }
+
+    // ── Helpers ───────────────────────────────────────────────────────────────
 
     private UserEntity findByEmail(String email) {
         return userRepository.findByEmail(email)
@@ -102,6 +132,7 @@ public class UserServiceImpl implements UserService {
                 .email(user.getEmail())
                 .role(user.getRole())
                 .isVerified(user.getIsVerified())
+                .isSuspended(user.getIsSuspended())
                 .avatarUrl(user.getAvatarUrl())
                 .bio(user.getBio())
                 .passwordChangedAt(user.getPasswordChangedAt())

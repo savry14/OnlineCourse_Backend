@@ -18,6 +18,7 @@ public class UserResponse {
     private String email;
     private Role role;
     private Boolean isVerified;
+    private Boolean isSuspended;
     private String avatarUrl;
     private String bio;
     private LocalDateTime passwordChangedAt;

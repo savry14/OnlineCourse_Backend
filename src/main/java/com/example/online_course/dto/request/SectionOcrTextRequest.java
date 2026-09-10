@@ -1,14 +1,13 @@
 package com.example.online_course.dto.request;
 
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 import java.math.BigDecimal;
 
 @Data
 public class SectionOcrTextRequest {
-    @NotNull(message = "sectionId is required")
+    // Populated from URL path variable — not sent in request body
     private Long sectionId;
 
     @NotBlank(message = "sourceFile is required")
