@@ -38,5 +38,4 @@ public class UserEntity {
 
     @OneToMany(mappedBy = "updatedBy")
     private List<CategoryEntity> updatedCategories = new ArrayList<>();
-
 }
