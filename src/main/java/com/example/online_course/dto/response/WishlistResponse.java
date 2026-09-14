@@ -11,11 +11,9 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class CategoryResponse {
-    private Long categoryId;
-    private String categoryName;
-    private Long createdBy;
-    private Long updatedBy;
+public class WishlistResponse {
+    private Long id;
+    private Long userId;
+    private Long courseId;
     private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
 }

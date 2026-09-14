@@ -1,5 +1,6 @@
 package com.example.online_course.dto.response;
 
+import com.example.online_course.enums.Role;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -8,15 +9,19 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 
 @Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
-public class LessonResponse {
+public class UserResponse {
     private Long id;
-    private String title;
-    private String videoUrl;
-    private String content;
-    private Long courseId;
+    private String name;
+    private String email;
+    private Role role;
+    private Boolean isVerified;
+    private Boolean isSuspended;
+    private String avatarUrl;
+    private String bio;
+    private LocalDateTime passwordChangedAt;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 }

@@ -10,7 +10,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.Random;
 
 @Service
 @RequiredArgsConstructor
@@ -18,12 +17,14 @@ public class PasswordResetServiceImpl implements PasswordResetService{
     private final UserRepository userRepository;
     private final PasswordResetOtpRepository passwordResetOtpRepository;
     private final PasswordEncoder passwordEncoder;
+    private final OtpService otpService;
+    private final EmailService emailService;
 
     @Override
     public void generateOtp(String email){
         UserEntity user = userRepository.findByEmail(email)
                 .orElseThrow(()->new NotFoundException("User with this email does not exist"));
-        String otp = String.format("%06d", new Random().nextInt(1000000));
+        String otp = otpService.generateOtp();
         LocalDateTime expiryTime = LocalDateTime.now().plusMinutes(10);
         PasswordResetEntity resetEntity = passwordResetOtpRepository
                 .findByUserEntity(user)
@@ -37,6 +38,8 @@ public class PasswordResetServiceImpl implements PasswordResetService{
         resetEntity.setVerified(false);
 
         passwordResetOtpRepository.save(resetEntity);
+
+        emailService.sendOtpEmail(user.getEmail(), otp);
 
         System.out.println("=================================");
         System.out.println("PASSWORD RESET OTP: " + otp);

@@ -11,15 +11,26 @@ public class CourseRequest {
     @NotBlank(message = "title is required")
     private String title;
 
+    @NotBlank(message = "slug is required")
+    private String slug;
+
+    @NotBlank(message = "category is required")
+    private String category;
+
+    private String badgeLabel;
+
     private String description;
 
-    private String thumbnail;
+    private String coverImageUrl;
 
     @NotNull(message = "price is required")
     private BigDecimal price;
 
-    private Long categoryId;
+    private String accessType = "free_forever";
 
-    @NotNull(message = "userId is required")
-    private Long userId;
+    private String format;
+
+    private String pacing;
+
+    private Boolean isPublished = Boolean.FALSE;
 }

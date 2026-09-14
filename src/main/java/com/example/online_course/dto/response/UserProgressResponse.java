@@ -11,11 +11,13 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class CategoryResponse {
-    private Long categoryId;
-    private String categoryName;
-    private Long createdBy;
-    private Long updatedBy;
+public class UserProgressResponse {
+    private Long id;
+    private Long userId;
+    private Long sectionId;
+    private Boolean isCompleted;
+    private Integer watchedSeconds;
+    private LocalDateTime completedAt;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 }

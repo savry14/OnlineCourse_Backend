@@ -5,17 +5,19 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class CategoryResponse {
-    private Long categoryId;
-    private String categoryName;
-    private Long createdBy;
-    private Long updatedBy;
+public class SectionOcrTextResponse {
+    private Long id;
+    private Long sectionId;
+    private String sourceFile;
+    private String extractedText;
+    private BigDecimal confidence;
+    private String language;
     private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
 }

@@ -1,6 +1,5 @@
 package com.example.online_course.dto.request;
 
-import com.example.online_course.enums.Role;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -10,9 +9,8 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class RegisterRequest {
-    private String name;
-    private String email;
-    private String password;
-    private Role role;
+public class ChangePasswordRequest {
+    private String currentPassword;
+    private String newPassword;
+    private String confirmPassword;
 }
