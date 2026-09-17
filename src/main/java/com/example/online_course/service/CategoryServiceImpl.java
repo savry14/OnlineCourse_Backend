@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -42,6 +43,8 @@ public class CategoryServiceImpl implements CategoryService{
                 .categoryImage(saveCategoryImage(categoryRequest.getCategoryImage()))
                 .createdBy(admin)
                 .updatedBy(admin)
+                .createdAt(LocalDateTime.now())
+                .updatedAt(LocalDateTime.now())
                 .build();
         categoryRepository.save(category);
         return CategoryResponse.builder()
