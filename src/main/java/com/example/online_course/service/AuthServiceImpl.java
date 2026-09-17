@@ -9,6 +9,7 @@ import com.example.online_course.enums.Role;
 import com.example.online_course.exception.EmailAlreadyExists;
 import com.example.online_course.exception.EmailAndPasswordAreNotMatch;
 import com.example.online_course.exception.NotFoundException;
+import com.example.online_course.exception.AccountSuspendedException;
 import com.example.online_course.repository.UserRepository;
 import com.example.online_course.security.JwtService;
 import lombok.RequiredArgsConstructor;
@@ -50,6 +51,9 @@ public class AuthServiceImpl implements AuthService{
                 .orElseThrow(()-> new NotFoundException("Email not found"));
         if (!passwordEncoder.matches(loginRequest.getPassword(),userEntity.getPassword())){
             throw new EmailAndPasswordAreNotMatch("Email and Password are not match.");
+        }
+        if (Boolean.TRUE.equals(userEntity.getIsSuspended())) {
+            throw new AccountSuspendedException();
         }
         String token = jwtService.generateToken(userEntity);
         return LoginResponse.builder()

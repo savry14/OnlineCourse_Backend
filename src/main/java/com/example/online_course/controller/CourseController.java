@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,8 +23,8 @@ public class CourseController {
     private final CourseService courseService;
     private final SectionService sectionService;
 
-    @PostMapping
-    public ResponseEntity<CourseResponse> create(@Valid @RequestBody CourseRequest request) {
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<CourseResponse> create(@Valid @ModelAttribute CourseRequest request) {
         CourseResponse response = courseService.create(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
@@ -38,9 +39,9 @@ public class CourseController {
         return ResponseEntity.ok(courseService.getById(id));
     }
 
-    @PutMapping("/{id}")
+    @PutMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<CourseResponse> update(@PathVariable Long id,
-                                                 @Valid @RequestBody CourseRequest request) {
+                                                 @Valid @ModelAttribute CourseRequest request) {
         return ResponseEntity.ok(courseService.update(id, request));
     }
 

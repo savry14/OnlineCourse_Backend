@@ -24,6 +24,8 @@ public class CategoryEntity {
 
     private String categoryName;
 
+    private String categoryImage;
+
     @CreationTimestamp
     private LocalDateTime createdAt;
 

@@ -28,6 +28,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         return path.startsWith("/api/auth/")
                 || path.startsWith("/api/password/")
+                || path.startsWith("/api/v1/files/")
                 || path.startsWith("/v3/api-docs/")
                 || path.startsWith("/swagger-ui/")
                 || path.startsWith("/webjars/");
@@ -58,6 +59,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
                 UserDetails userDetails =
                         customerUserDetailService.loadUserByUsername(email);
+
+                if (!userDetails.isAccountNonLocked()) {
+                    writeSuspendedResponse(response);
+                    return;
+                }
 
                 if (jwtService.isTokenValid(token, userDetails)) {
 
@@ -99,5 +105,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
 
         filterChain.doFilter(request, response);
+    }
+
+    private void writeSuspendedResponse(HttpServletResponse response) throws IOException {
+        response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+        response.setContentType("application/json");
+        response.getWriter().write(
+                "{\"message\": \"This account has been suspended\", \"status\": 403}"
+        );
     }
 }

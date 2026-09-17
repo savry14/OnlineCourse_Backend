@@ -36,8 +36,8 @@ public class CourseEntity {
     @Column(columnDefinition = "TEXT")
     private String description;
 
-    @Column(name = "cover_image_url", length = 500)
-    private String coverImageUrl;
+    @Column(name = "cover_image", length = 255)
+    private String coverImage;
 
     @Column(nullable = false, precision = 10, scale = 2)
     private BigDecimal price;

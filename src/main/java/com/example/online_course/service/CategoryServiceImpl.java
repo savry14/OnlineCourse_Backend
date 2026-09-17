@@ -12,8 +12,14 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.util.List;
+import java.util.UUID;
 
 
 @Service
@@ -33,6 +39,7 @@ public class CategoryServiceImpl implements CategoryService{
                 .orElseThrow(() -> new NotFoundException("User not found!"));
         CategoryEntity category = CategoryEntity.builder()
                 .categoryName(categoryRequest.getCategoryName())
+                .categoryImage(saveCategoryImage(categoryRequest.getCategoryImage()))
                 .createdBy(admin)
                 .updatedBy(admin)
                 .build();
@@ -40,6 +47,7 @@ public class CategoryServiceImpl implements CategoryService{
         return CategoryResponse.builder()
                 .categoryId(category.getCategoryId())
                 .categoryName(category.getCategoryName())
+                .categoryImage(category.getCategoryImage())
                 .createdBy(category.getCreatedBy().getId())
                 .updatedBy(category.getUpdatedBy().getId())
                 .createdAt(category.getCreatedAt())
@@ -54,6 +62,7 @@ public class CategoryServiceImpl implements CategoryService{
                 .map(category -> CategoryResponse.builder()
                         .categoryId(category.getCategoryId())
                         .categoryName(category.getCategoryName())
+                        .categoryImage(category.getCategoryImage())
                         .createdBy(
                                 category.getCreatedBy() != null ? category.getCreatedBy().getId() : null
                         )
@@ -78,6 +87,7 @@ public class CategoryServiceImpl implements CategoryService{
         return CategoryResponse.builder()
                 .categoryId(category.getCategoryId())
                 .categoryName(category.getCategoryName())
+                .categoryImage(category.getCategoryImage())
                 .createdBy(
                         category.getCreatedBy() != null ? category.getCreatedBy().getId() : null
                 )
@@ -102,11 +112,15 @@ public class CategoryServiceImpl implements CategoryService{
         CategoryEntity category = categoryRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Category not found!"));
         category.setCategoryName(categoryRequest.getCategoryName());
+        if (categoryRequest.getCategoryImage() != null && !categoryRequest.getCategoryImage().isEmpty()) {
+            category.setCategoryImage(saveCategoryImage(categoryRequest.getCategoryImage()));
+        }
         category.setUpdatedBy(admin);
         categoryRepository.save(category);
         return CategoryResponse.builder()
                 .categoryId(category.getCategoryId())
                 .categoryName(category.getCategoryName())
+                .categoryImage(category.getCategoryImage())
                 .createdBy(category.getCreatedBy().getId())
                 .updatedBy(category.getUpdatedBy().getId())
                 .createdAt(category.getCreatedAt())
@@ -123,5 +137,30 @@ public class CategoryServiceImpl implements CategoryService{
         CategoryEntity category = categoryRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Category not found!"));
         categoryRepository.delete(category);
+    }
+
+    private String saveCategoryImage(MultipartFile categoryImage) {
+        if (categoryImage == null || categoryImage.isEmpty()) {
+            return null;
+        }
+        if (categoryImage.getContentType() == null || !categoryImage.getContentType().startsWith("image/")) {
+            throw new IllegalArgumentException("Category image must be an image file");
+        }
+
+        String originalFilename = categoryImage.getOriginalFilename();
+        String extension = originalFilename != null && originalFilename.lastIndexOf('.') >= 0
+                ? originalFilename.substring(originalFilename.lastIndexOf('.'))
+                : "";
+        String filename = UUID.randomUUID() + extension;
+        Path uploadDirectory = Path.of("uploads", "categories").toAbsolutePath().normalize();
+
+        try {
+            Files.createDirectories(uploadDirectory);
+            Files.copy(categoryImage.getInputStream(), uploadDirectory.resolve(filename),
+                    StandardCopyOption.REPLACE_EXISTING);
+            return filename;
+        } catch (IOException exception) {
+            throw new IllegalStateException("Could not store category image", exception);
+        }
     }
 }

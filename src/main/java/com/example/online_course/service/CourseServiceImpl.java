@@ -6,16 +6,26 @@ import com.example.online_course.entity.CourseEntity;
 import com.example.online_course.exception.ResourceNotFoundException;
 import com.example.online_course.repository.CourseRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
 @Transactional
 public class CourseServiceImpl implements CourseService {
     private final CourseRepository courseRepository;
+
+    @Value("${app.files.base-url}")
+    private String filesBaseUrl;
 
     @Override
     public CourseResponse create(CourseRequest request) {
@@ -25,7 +35,7 @@ public class CourseServiceImpl implements CourseService {
                 .category(request.getCategory())
                 .badgeLabel(request.getBadgeLabel())
                 .description(request.getDescription())
-                .coverImageUrl(request.getCoverImageUrl())
+                .coverImage(saveCoverImage(request.getCoverImage()))
                 .price(request.getPrice())
                 .accessType(request.getAccessType())
                 .format(request.getFormat())
@@ -62,7 +72,9 @@ public class CourseServiceImpl implements CourseService {
         course.setCategory(request.getCategory());
         course.setBadgeLabel(request.getBadgeLabel());
         course.setDescription(request.getDescription());
-        course.setCoverImageUrl(request.getCoverImageUrl());
+        if (request.getCoverImage() != null && !request.getCoverImage().isEmpty()) {
+            course.setCoverImage(saveCoverImage(request.getCoverImage()));
+        }
         course.setPrice(request.getPrice());
         course.setAccessType(request.getAccessType());
         course.setFormat(request.getFormat());
@@ -94,7 +106,7 @@ public class CourseServiceImpl implements CourseService {
                 .category(course.getCategory())
                 .badgeLabel(course.getBadgeLabel())
                 .description(course.getDescription())
-                .coverImageUrl(course.getCoverImageUrl())
+                .coverImage(toCoverImageUrl(course.getCoverImage()))
                 .price(course.getPrice())
                 .accessType(course.getAccessType())
                 .format(course.getFormat())
@@ -103,5 +115,34 @@ public class CourseServiceImpl implements CourseService {
                 .createdAt(course.getCreatedAt())
                 .updatedAt(course.getUpdatedAt())
                 .build();
+    }
+
+    private String toCoverImageUrl(String filename) {
+        if (filename == null || filename.isBlank()) {
+            return null;
+        }
+        return filesBaseUrl.replaceAll("/+$", "") + "/" + filename;
+    }
+
+    private String saveCoverImage(MultipartFile coverImage) {
+        if (coverImage == null || coverImage.isEmpty()) {
+            return null;
+        }
+
+        String originalFilename = coverImage.getOriginalFilename();
+        String extension = originalFilename != null && originalFilename.lastIndexOf('.') >= 0
+                ? originalFilename.substring(originalFilename.lastIndexOf('.'))
+                : "";
+        String filename = UUID.randomUUID() + extension;
+        Path uploadDirectory = Path.of("uploads", "courses").toAbsolutePath().normalize();
+
+        try {
+            Files.createDirectories(uploadDirectory);
+            Files.copy(coverImage.getInputStream(), uploadDirectory.resolve(filename),
+                    StandardCopyOption.REPLACE_EXISTING);
+            return filename;
+        } catch (IOException exception) {
+            throw new IllegalStateException("Could not store course cover image", exception);
+        }
     }
 }

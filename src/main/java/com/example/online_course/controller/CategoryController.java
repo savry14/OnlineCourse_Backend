@@ -5,6 +5,7 @@ import com.example.online_course.dto.response.ApiResponse;
 import com.example.online_course.dto.response.CategoryResponse;
 import com.example.online_course.service.CategoryService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,8 +18,8 @@ public class CategoryController {
 
     private final CategoryService categoryService;
 
-    @PostMapping
-    public ApiResponse<CategoryResponse> create(@RequestBody CategoryRequest categoryRequest) {
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ApiResponse<CategoryResponse> create(@ModelAttribute CategoryRequest categoryRequest) {
         return new ApiResponse<>("Create category successfully", 200, categoryService.createCategory(categoryRequest));
     }
 
@@ -32,8 +33,8 @@ public class CategoryController {
         return new ApiResponse<>("Get category successfully", 200, categoryService.getCategoryById(id));
     }
 
-    @PutMapping("/{id}")
-    public ApiResponse<CategoryResponse> updateCategory(@RequestBody CategoryRequest categoryRequest, @PathVariable Long id) {
+    @PutMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ApiResponse<CategoryResponse> updateCategory(@ModelAttribute CategoryRequest categoryRequest, @PathVariable Long id) {
         return new ApiResponse<>("Update category successfully", 200, categoryService.updateCategory(id, categoryRequest));
     }
 

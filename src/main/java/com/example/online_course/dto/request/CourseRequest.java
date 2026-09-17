@@ -3,6 +3,7 @@ package com.example.online_course.dto.request;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.math.BigDecimal;
 
@@ -21,7 +22,7 @@ public class CourseRequest {
 
     private String description;
 
-    private String coverImageUrl;
+    private MultipartFile coverImage;
 
     @NotNull(message = "price is required")
     private BigDecimal price;

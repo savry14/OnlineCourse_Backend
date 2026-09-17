@@ -39,6 +39,20 @@ public class GlobalException {
                 .body(e.getMessage());
     }
 
+    @ExceptionHandler(AccountSuspendedException.class)
+    public ResponseEntity<?> handleAccountSuspended(AccountSuspendedException e) {
+        return ResponseEntity
+                .status(HttpStatus.FORBIDDEN)
+                .body(e.getMessage());
+    }
+
+    @ExceptionHandler(IllegalStateException.class)
+    public ResponseEntity<?> handleIllegalState(IllegalStateException e) {
+        return ResponseEntity
+                .status(HttpStatus.CONFLICT)
+                .body(e.getMessage());
+    }
+
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<?> handleIllegalArgument(IllegalArgumentException e) {
         return ResponseEntity

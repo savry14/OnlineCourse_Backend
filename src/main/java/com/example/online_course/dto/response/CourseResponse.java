@@ -19,7 +19,7 @@ public class CourseResponse {
     private String category;
     private String badgeLabel;
     private String description;
-    private String coverImageUrl;
+    private String coverImage;
     private BigDecimal price;
     private String accessType;
     private String format;

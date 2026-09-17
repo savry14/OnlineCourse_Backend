@@ -46,6 +46,7 @@ public class SecurityConfig {
                         .requestMatchers(
                                 org.springframework.http.HttpMethod.GET, "/api/courses/**"
                         ).permitAll()
+                        .requestMatchers(org.springframework.http.HttpMethod.GET, "/api/v1/files/**").permitAll()
 
                         // ── Public: read-only Sections ────────────────────────
                         .requestMatchers(
